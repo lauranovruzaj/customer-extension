@@ -6,6 +6,8 @@ export default async () => {
   render(<Extension />, document.body);
 };
 
+const API_URL = 'shopify://customer-account/api/2026-04/graphql.json';
+
 const CUSTOMER_QUERY = `query {
   customer {
     firstName
@@ -23,8 +25,12 @@ const CUSTOMER_QUERY = `query {
           firstName
           lastName
           address1
+          address2
           city
           zip
+          zoneCode
+          territoryCode
+          province
           country
         }
       }
@@ -46,6 +52,14 @@ const CUSTOMER_QUERY = `query {
   }
 }`;
 
+function gqlFetch(query, variables) {
+  return fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({query, variables}),
+  }).then(res => res.json());
+}
+
 function extractId(gid) {
   return gid.split('/').pop();
 }
@@ -61,26 +75,104 @@ function formatDate(iso) {
 function Extension() {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editingAddress, setEditingAddress] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
-  useEffect(() => {
-    fetch('shopify://customer-account/api/2026-04/graphql.json', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({query: CUSTOMER_QUERY}),
-    })
-      .then(res => res.json())
-      .then((json) => {
-        console.log('Customer API response:', JSON.stringify(json, null, 2));
+  function fetchCustomer() {
+    gqlFetch(CUSTOMER_QUERY)
+      .then(json => {
         setCustomer(json.data?.customer ?? null);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error('Customer API error:', err);
-        setLoading(false);
-      });
-  }, []);
+      .catch(() => setLoading(false));
+  }
+
+  useEffect(() => { fetchCustomer(); }, []);
 
   const t = (key) => shopify.i18n.translate(key);
+
+  function handleEditClick(address) {
+    console.log('Full address object:', JSON.stringify(address));
+    setFormError(null);
+    setSaveSuccess(false);
+    setEditingAddress(address);
+    setFormData({
+      firstName: address.firstName || '',
+      lastName: address.lastName || '',
+      address1: address.address1 || '',
+      address2: address.address2 || '',
+      city: address.city || '',
+      zip: address.zip || '',
+      zoneCode: address.zoneCode || '',
+      territoryCode: address.territoryCode || '',
+    });
+  }
+
+  function field(key) {
+    return (e) => setFormData(prev => ({...prev, [key]: e.target.value}));
+  }
+
+  async function saveAddress() {
+    console.log('Saving address, formData:', JSON.stringify(formData));
+    console.log('editingAddress.id:', editingAddress?.id);
+    setSaving(true);
+    setFormError(null);
+    const json = await gqlFetch(
+      `mutation updateAddress($addressId: ID!, $address: CustomerAddressInput!) {
+        customerAddressUpdate(addressId: $addressId, address: $address) {
+          customerAddress { id }
+          userErrors { field message }
+        }
+      }`,
+      {
+        addressId: editingAddress.id,
+        address: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          address1: formData.address1,
+          address2: formData.address2,
+          city: formData.city,
+          zip: formData.zip,
+          zoneCode: formData.zoneCode || undefined,
+          territoryCode: formData.territoryCode || undefined,
+        }
+      }
+    );
+    console.log('Mutation response:', JSON.stringify(json));
+    setSaving(false);
+    const errors = json.data?.customerAddressUpdate?.userErrors;
+    if (errors?.length) {
+      setFormError(errors[0].message);
+    } else if (json.errors?.length) {
+      setFormError(json.errors[0].message);
+    } else {
+      setSaveSuccess(true);
+      fetchCustomer();
+    }
+  }
+
+  async function deleteAddress() {
+    const json = await gqlFetch(
+      `mutation deleteAddress($addressId: ID!) {
+        customerAddressDelete(addressId: $addressId) {
+          deletedAddressId
+          userErrors { field message }
+        }
+      }`,
+      {addressId: editingAddress.id}
+    );
+    const errors = json.data?.customerAddressDelete?.userErrors;
+    if (!errors?.length) {
+      setSaveSuccess(true);
+      fetchCustomer();
+    }
+  }
+
+  const addresses = customer?.addresses?.edges?.map(e => e.node) ?? [];
+  const orders = customer?.orders?.edges?.map(e => e.node) ?? [];
 
   if (loading) {
     return (
@@ -90,14 +182,103 @@ function Extension() {
     );
   }
 
-  const addresses = customer?.addresses?.edges?.map(e => e.node) ?? [];
-  const orders = customer?.orders?.edges?.map(e => e.node) ?? [];
-
   return (
     <s-page heading={t('customProfilePage.title')}>
+
+      {/* Edit address modal — opened via commandFor, closed via command="--hide" */}
+      <s-modal id="address-edit-modal" heading={t('customProfilePage.addressBook.editTitle')}>
+        {saveSuccess ? (
+          <s-stack direction="block" gap="base">
+            <s-banner tone="success">
+              <s-text>{t('customProfilePage.addressBook.form.success')}</s-text>
+            </s-banner>
+            <s-button commandFor="address-edit-modal" command="--hide">
+              {t('customProfilePage.addressBook.form.close')}
+            </s-button>
+          </s-stack>
+        ) : (
+          <s-stack direction="block" gap="base" key={editingAddress?.id}>
+            {formError && (
+              <s-banner tone="critical">
+                <s-text>{formError}</s-text>
+              </s-banner>
+            )}
+            <s-text-field
+              label={t('customProfilePage.addressBook.form.country')}
+              name="territoryCode"
+              value={formData.territoryCode}
+              onInput={field('territoryCode')}
+              helpText="ISO country code, e.g. IT, US, GB"
+            />
+            <s-grid gridTemplateColumns="1fr 1fr" gap="base">
+              <s-text-field
+                label={t('customProfilePage.addressBook.form.firstName')}
+                name="firstName"
+                value={formData.firstName}
+                onInput={field('firstName')}
+              />
+              <s-text-field
+                label={t('customProfilePage.addressBook.form.lastName')}
+                name="lastName"
+                value={formData.lastName}
+                onInput={field('lastName')}
+              />
+            </s-grid>
+            <s-text-field
+              label={t('customProfilePage.addressBook.form.address1')}
+              name="address1"
+              value={formData.address1}
+              onInput={field('address1')}
+            />
+            <s-text-field
+              label={t('customProfilePage.addressBook.form.address2')}
+              name="address2"
+              value={formData.address2}
+              onInput={field('address2')}
+            />
+            <s-grid gridTemplateColumns="1fr 1fr 1fr" gap="base">
+              <s-text-field
+                label={t('customProfilePage.addressBook.form.zip')}
+                name="zip"
+                value={formData.zip}
+                onInput={field('zip')}
+              />
+              <s-text-field
+                label={t('customProfilePage.addressBook.form.city')}
+                name="city"
+                value={formData.city}
+                onInput={field('city')}
+              />
+              <s-text-field
+                label={t('customProfilePage.addressBook.form.province')}
+                name="zoneCode"
+                value={formData.zoneCode}
+                onInput={field('zoneCode')}
+                helpText="Province/state code, e.g. NA, CA, NY"
+              />
+            </s-grid>
+            <s-grid gridTemplateColumns="1fr auto" gap="base">
+              <s-box>
+                <s-button tone="critical" onClick={deleteAddress}>
+                  {t('customProfilePage.addressBook.delete')}
+                </s-button>
+              </s-box>
+              <s-stack direction="inline" gap="base">
+                <s-button commandFor="address-edit-modal" command="--hide">
+                  {t('customProfilePage.addressBook.form.cancel')}
+                </s-button>
+                <s-button variant="primary" onClick={saveAddress} loading={saving}>
+                  {t('customProfilePage.addressBook.form.save')}
+                </s-button>
+              </s-stack>
+            </s-grid>
+          </s-stack>
+        )}
+      </s-modal>
+
       <s-grid gridTemplateColumns="240px 1fr" gap="loose">
 
-        {/* Sidebar navigation */}
+        {/* Sidebar */}
         <s-box border="base" borderRadius="base">
           <s-stack direction="block" gap="none">
             <s-clickable href="extension:custom-profile-extension" padding="base" background="subdued">
@@ -189,16 +370,16 @@ function Extension() {
                       <s-icon type="location" size="base" />
                       <s-text type="strong">{address.firstName} {address.lastName}</s-text>
                       {address.address1 && <s-text>{address.address1}</s-text>}
+                      {address.address2 && <s-text>{address.address2}</s-text>}
                       {address.city && <s-text>{address.city} {address.zip}</s-text>}
                       <s-text>{address.country}</s-text>
-                      <s-stack direction="inline" gap="base">
-                        <s-link href={`shopify:customer-account/profile/addresses/${extractId(address.id)}/edit`}>
-                          {t('customProfilePage.addressBook.edit')}
-                        </s-link>
-                        <s-link href={`shopify:customer-account/profile/addresses/${extractId(address.id)}/delete`} tone="critical">
-                          {t('customProfilePage.addressBook.delete')}
-                        </s-link>
-                      </s-stack>
+                      <s-link
+                        commandFor="address-edit-modal"
+                        command="--show"
+                        onClick={() => handleEditClick(address)}
+                      >
+                        {t('customProfilePage.addressBook.edit')}
+                      </s-link>
                     </s-stack>
                   </s-box>
                 ))}

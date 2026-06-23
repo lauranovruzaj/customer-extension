@@ -31,10 +31,25 @@
     },
     "addressBook": {
       "title": "Address Book",
+      "editTitle": "Edit address",
       "edit": "Edit",
       "delete": "Delete",
       "createNew": "Create New Address",
-      "empty": "No saved addresses yet."
+      "empty": "No saved addresses yet.",
+      "form": {
+        "country": "Country/region",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "address1": "Street and house number",
+        "address2": "Apartment, suite, etc. (optional)",
+        "zip": "Postal code",
+        "city": "City",
+        "province": "Province",
+        "cancel": "Cancel",
+        "save": "Save",
+        "close": "Close",
+        "success": "Address updated successfully."
+      }
     },
     "orders": {
       "title": "My Orders",
