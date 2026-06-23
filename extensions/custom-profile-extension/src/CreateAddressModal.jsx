@@ -1,5 +1,6 @@
 import {useState} from "preact/hooks";
 import {gqlFetch} from "./api.js";
+import {CountrySelect} from "./CountrySelect.jsx";
 
 const CREATE_MUTATION = `
   mutation createAddress($address: CustomerAddressInput!, $defaultAddress: Boolean) {
@@ -93,13 +94,10 @@ export function CreateAddressModal({ onSuccess }) {
               <s-text>{formError}</s-text>
             </s-banner>
           )}
-          <s-text-field
+          <CountrySelect
             label={t('customProfilePage.addressBook.form.country')}
-            name="territoryCode"
             value={formData.territoryCode}
-            onInput={field('territoryCode')}
-            placeholder="e.g. IT, US, GB, FR"
-            helpText={t('customProfilePage.addressBook.form.countryHelp')}
+            onChange={(e) => setFormData(prev => ({...prev, territoryCode: e.target.value}))}
           />
           <s-grid gridTemplateColumns="1fr 1fr" gap="base">
             <s-text-field
@@ -114,7 +112,14 @@ export function CreateAddressModal({ onSuccess }) {
               value={formData.lastName}
               onInput={field('lastName')}
             />
+             <s-text-field
+              label={t('customProfilePage.addressBook.form.company')}
+              name="company"
+              value={formData.company}
+              onInput={field('company')}
+            />
           </s-grid>
+
           <s-text-field
             label={t('customProfilePage.addressBook.form.address1')}
             name="address1"
@@ -134,21 +139,23 @@ export function CreateAddressModal({ onSuccess }) {
               value={formData.zip}
               onInput={field('zip')}
             />
+            
             <s-text-field
               label={t('customProfilePage.addressBook.form.city')}
               name="city"
               value={formData.city}
               onInput={field('city')}
             />
-            <s-text-field
-              label={t('customProfilePage.addressBook.form.province')}
-              name="zoneCode"
-              value={formData.zoneCode}
-              onInput={field('zoneCode')}
-              placeholder="e.g. NA, CA, NY"
-              helpText={t('customProfilePage.addressBook.form.provinceHelp')}
+              <s-text-field
+              label={t('customProfilePage.addressBook.form.phone')}
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onInput={field('phoneNumber')}
             />
+
+          
           </s-grid>
+        
           <s-checkbox
             label={t('customProfilePage.addressBook.form.setDefault')}
             name="defaultAddress"

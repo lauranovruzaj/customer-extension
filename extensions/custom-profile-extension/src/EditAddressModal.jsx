@@ -1,5 +1,6 @@
 import {useState, useEffect} from "preact/hooks";
 import {gqlFetch} from "./api.js";
+import {CountrySelect} from "./CountrySelect.jsx";
 
 const UPDATE_MUTATION = `
   mutation updateAddress($addressId: ID!, $address: CustomerAddressInput!) {
@@ -111,21 +112,11 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
               <s-text>{formError}</s-text>
             </s-banner>
           )}
-          <s-text-field
+          <CountrySelect
             label={t('customProfilePage.addressBook.form.country')}
-            name="territoryCode"
             value={formData.territoryCode}
-            onInput={field('territoryCode')}
-            helpText="ISO country code, e.g. IT, US, GB"
-  
+            onChange={(e) => setFormData(prev => ({...prev, territoryCode: e.target.value}))}
           />
-           <s-text-field
-              label={t('customProfilePage.addressBook.form.province')}
-              name="zoneCode"
-              value={formData.zoneCode}
-              onInput={field('zoneCode')}
-              helpText="Province/state code, e.g. NA, CA, NY"
-            />
           <s-grid gridTemplateColumns="1fr 1fr" gap="base">
             <s-text-field
               label={t('customProfilePage.addressBook.form.firstName')}
@@ -183,6 +174,7 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
            
             
           </s-grid>
+          
           <s-grid gridTemplateColumns="1fr auto" gap="base">
             <s-box>
               <s-button tone="critical" onClick={deleteAddress}>
