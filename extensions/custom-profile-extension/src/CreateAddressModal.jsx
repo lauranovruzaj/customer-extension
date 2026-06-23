@@ -99,6 +99,13 @@ export function CreateAddressModal({ onSuccess }) {
             value={formData.territoryCode}
             onChange={(e) => setFormData(prev => ({...prev, territoryCode: e.target.value}))}
           />
+           <s-text-field
+              label={t('customProfilePage.addressBook.form.province')}
+              name="zoneCode"
+              value={formData.zoneCode}
+              onInput={field('zoneCode')}
+              placeholder="e.g. NA, MI, RM"
+            />
           <s-grid gridTemplateColumns="1fr 1fr" gap="base">
             <s-text-field
               label={t('customProfilePage.addressBook.form.firstName')}
