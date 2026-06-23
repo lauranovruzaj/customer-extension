@@ -1,7 +1,6 @@
 import {useState, useEffect} from "preact/hooks";
 import {gqlFetch} from "./api.js";
-import {CountrySelect} from "./CountrySelect.jsx";
-import {OriginCountrySelect} from "./OriginCountrySelect.jsx";
+import {CountrySelect, OriginCountrySelect} from "./selects.jsx";
 
 const SAVE_MUTATION = `
   mutation saveProfile($input: CustomerUpdateInput!, $metafields: [MetafieldsSetInput!]!) {

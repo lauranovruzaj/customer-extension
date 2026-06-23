@@ -1,6 +1,6 @@
 import {useState} from "preact/hooks";
 import {gqlFetch} from "./api.js";
-import {CountrySelect} from "./CountrySelect.jsx";
+import {CountrySelect} from "./selects.jsx";
 
 const CREATE_MUTATION = `
   mutation createAddress($address: CustomerAddressInput!, $defaultAddress: Boolean) {
