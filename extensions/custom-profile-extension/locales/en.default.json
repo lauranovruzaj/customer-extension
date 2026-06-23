@@ -34,6 +34,7 @@
       "editTitle": "Edit address",
       "addTitle": "Add address",
       "edit": "Edit",
+      "default": "Default Address",
       "delete": "Delete",
       "createNew": "Add new address",
       "empty": "No saved addresses yet.",

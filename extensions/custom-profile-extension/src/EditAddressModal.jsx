@@ -3,8 +3,8 @@ import {gqlFetch} from "./api.js";
 import {CountrySelect} from "./CountrySelect.jsx";
 
 const UPDATE_MUTATION = `
-  mutation updateAddress($addressId: ID!, $address: CustomerAddressInput!) {
-    customerAddressUpdate(addressId: $addressId, address: $address) {
+  mutation updateAddress($addressId: ID!, $address: CustomerAddressInput!, $defaultAddress: Boolean) {
+    customerAddressUpdate(addressId: $addressId, address: $address, defaultAddress: $defaultAddress) {
       customerAddress { id }
       userErrors { field message }
     }
@@ -40,7 +40,7 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
         zoneCode:  editingAddress.zoneCode || '',
         zip: editingAddress.zip || '',
         phoneNumber: editingAddress.phoneNumber || '',
-    
+        defaultAddress: false,
       });
       setFormError(null);
       setSaveSuccess(false);
@@ -68,8 +68,9 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
         zoneCode: formData.zoneCode || undefined,
         territoryCode: formData.territoryCode || undefined,
         zip: formData.zip,
-        phoneNumber: formData.phoneNumber
+        phoneNumber: formData.phoneNumber,
       },
+      defaultAddress: formData.defaultAddress,
     });
     setSaving(false);
     const errors = json.data?.customerAddressUpdate?.userErrors;
@@ -183,6 +184,13 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
             
           </s-grid>
           
+          <s-checkbox
+            label={t('customProfilePage.addressBook.form.setDefault')}
+            name="defaultAddress"
+            checked={formData.defaultAddress}
+            onChange={(e) => setFormData(prev => ({...prev, defaultAddress: e.target.checked}))}
+          />
+
           <s-grid gridTemplateColumns="1fr auto" gap="base">
             <s-box>
               <s-button tone="critical" onClick={deleteAddress}>

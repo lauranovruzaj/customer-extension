@@ -212,8 +212,13 @@ function Extension() {
                 {addresses.map(address => (
                   <s-box key={address.id} border="base" borderRadius="base" padding="base">
                     <s-stack direction="block" gap="base" alignItems="center">
+                      {address.id === customer.defaultAddress?.id && (
+                        <s-badge tone="success">{t('customProfilePage.addressBook.default')}</s-badge>
+                      )}
                       <s-icon type="location" size="base" />
                       <s-text type="strong">{address.firstName} {address.lastName}</s-text>
+                      <s-text>{address.address1}</s-text>
+                      <s-text>{address.city}</s-text>
                       <s-text>{address.country}</s-text>
                   
                       <s-link
