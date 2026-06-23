@@ -58,6 +58,16 @@
         "provinceHelp": "Region/state code, e.g. NA for Naples, CA for California"
       }
     },
+    "editProfile": {
+      "title": "Edit profile",
+      "title_field": "Title",
+      "dateOfBirth": "Date of birth",
+      "phoneNumber": "Phone number",
+      "preferredCommunicationChannel": "Preferred communication channel",
+      "countryOfOrigin": "Country / region of origin",
+      "success": "Profile updated successfully.",
+      "emailHelp": "This email is used for sign-in and order updates."
+    },
     "orders": {
       "title": "My Orders",
       "number": "Order Number",

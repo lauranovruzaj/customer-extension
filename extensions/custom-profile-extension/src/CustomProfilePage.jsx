@@ -4,6 +4,7 @@ import {useState, useEffect} from "preact/hooks";
 import {gqlFetch} from "./api.js";
 import {EditAddressModal} from "./EditAddressModal.jsx";
 import {CreateAddressModal} from "./CreateAddressModal.jsx";
+import {EditProfileModal} from "./EditProfileModal.jsx";
 
 export default async () => {
   render(<Extension />, document.body);
@@ -11,13 +12,27 @@ export default async () => {
 
 const CUSTOMER_QUERY = `query {
   customer {
+    id
     firstName
     lastName
     emailAddress {
       emailAddress
     }
+   
     defaultAddress {
+      id
       country
+      territoryCode
+      phoneNumber
+    }
+    metafields(identifiers: [
+      { namespace: "custom", key: "title" }
+      { namespace: "custom", key: "date_of_birth" }
+      { namespace: "custom", key: "preferred_communication_channel" }
+      { namespace: "custom", key: "country_of_origin" }
+    ]) {
+      key
+      value
     }
     addresses(first: 9) {
       edges {
@@ -34,7 +49,6 @@ const CUSTOMER_QUERY = `query {
           phoneNumber
           territoryCode
           zoneCode
-          
         }
       }
     }
@@ -103,6 +117,7 @@ function Extension() {
 
       <EditAddressModal editingAddress={editingAddress} onSuccess={fetchCustomer} />
       <CreateAddressModal onSuccess={fetchCustomer} />
+      <EditProfileModal customer={customer} onSuccess={fetchCustomer} />
 
       <s-grid gridTemplateColumns="240px 1fr" gap="loose">
 
@@ -177,7 +192,9 @@ function Extension() {
               </s-box>
             </s-grid>
             <s-box paddingBlockStart="base">
-              <s-link href="shopify:customer-account/profile">{t('customProfilePage.viewAll')}</s-link>
+              <s-link commandFor="profile-edit-modal" command="--show">
+                {t('customProfilePage.editProfile.title')}
+              </s-link>
             </s-box>
           </s-section>
 
@@ -197,14 +214,8 @@ function Extension() {
                     <s-stack direction="block" gap="base" alignItems="center">
                       <s-icon type="location" size="base" />
                       <s-text type="strong">{address.firstName} {address.lastName}</s-text>
-                      <s-text>{address.company}</s-text>
-                      <s-text>{address.phoneNumber}</s-text>
-                      {address.address1 && <s-text>{address.address1}</s-text>}
-                      {address.address2 && <s-text>{address.address2}</s-text>}
-                      {address.city && <s-text>{address.city} {address.zip}</s-text>}
                       <s-text>{address.country}</s-text>
-                      <s-text>{address.territoryCode}</s-text>
-                      <s-text>{address.zoneCode}</s-text>
+                  
                       <s-link
                         commandFor="address-edit-modal"
                         command="--show"
