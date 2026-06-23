@@ -1,0 +1,11 @@
+{
+  "earnPoints": "You've earned 1,000 points from this order. You've been upgraded to Platinum tier.",
+  "ordersMessage": "View your order history and track your loyalty points.",
+  "profileMessage": "Manage your account details and preferences.",
+  "profileLoyaltyButton": "View Loyalty Dashboard",
+  "profileCustomPageButton": "View My Account",
+  "profileAnnouncement": {
+    "message": "Your loyalty status has been upgraded to Platinum!",
+    "link": "View your profile"
+  }
+}

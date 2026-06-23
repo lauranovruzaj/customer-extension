@@ -1,0 +1,15 @@
+api_version = "2026-04"
+
+[[extensions]]
+name = "loyalty-extension"
+handle = "loyalty-extension"
+type = "ui_extension"
+uid = "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+
+[[extensions.targeting]]
+module = "./src/LoyaltyPage.jsx"
+target = "customer-account.page.render"
+url_handle = "loyalty"
+
+[extensions.capabilities]
+api_access = true
