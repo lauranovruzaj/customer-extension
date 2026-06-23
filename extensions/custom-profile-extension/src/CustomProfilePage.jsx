@@ -3,6 +3,7 @@ import {render} from "preact";
 import {useState, useEffect} from "preact/hooks";
 import {gqlFetch} from "./api.js";
 import {EditAddressModal} from "./EditAddressModal.jsx";
+import {CreateAddressModal} from "./CreateAddressModal.jsx";
 
 export default async () => {
   render(<Extension />, document.body);
@@ -24,14 +25,16 @@ const CUSTOMER_QUERY = `query {
           id
           firstName
           lastName
+          company
           address1
           address2
           city
-          zip
-          zoneCode
-          territoryCode
-          province
           country
+          zip
+          phoneNumber
+          territoryCode
+          zoneCode
+          
         }
       }
     }
@@ -72,10 +75,11 @@ function Extension() {
   function fetchCustomer() {
     gqlFetch(CUSTOMER_QUERY)
       .then(json => {
+        if (json.errors) console.error('Customer query errors:', JSON.stringify(json.errors));
         setCustomer(json.data?.customer ?? null);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(err => { console.error('Customer query failed:', err); setLoading(false); });
   }
 
   useEffect(() => { fetchCustomer(); }, []);
@@ -84,6 +88,7 @@ function Extension() {
 
   const addresses = customer?.addresses?.edges?.map(e => e.node) ?? [];
   const orders = customer?.orders?.edges?.map(e => e.node) ?? [];
+
 
   if (loading) {
     return (
@@ -97,6 +102,7 @@ function Extension() {
     <s-page heading={t('customProfilePage.title')}>
 
       <EditAddressModal editingAddress={editingAddress} onSuccess={fetchCustomer} />
+      <CreateAddressModal onSuccess={fetchCustomer} />
 
       <s-grid gridTemplateColumns="240px 1fr" gap="loose">
 
@@ -191,10 +197,14 @@ function Extension() {
                     <s-stack direction="block" gap="base" alignItems="center">
                       <s-icon type="location" size="base" />
                       <s-text type="strong">{address.firstName} {address.lastName}</s-text>
+                      <s-text>{address.company}</s-text>
+                      <s-text>{address.phoneNumber}</s-text>
                       {address.address1 && <s-text>{address.address1}</s-text>}
                       {address.address2 && <s-text>{address.address2}</s-text>}
                       {address.city && <s-text>{address.city} {address.zip}</s-text>}
                       <s-text>{address.country}</s-text>
+                      <s-text>{address.territoryCode}</s-text>
+                      <s-text>{address.zoneCode}</s-text>
                       <s-link
                         commandFor="address-edit-modal"
                         command="--show"
@@ -210,7 +220,7 @@ function Extension() {
               <s-text color="subdued">{t('customProfilePage.addressBook.empty')}</s-text>
             )}
             <s-box paddingBlockStart="base">
-              <s-button href="shopify:customer-account/profile/addresses/new" variant="secondary">
+              <s-button commandFor="address-create-modal" command="--show" variant="secondary">
                 {t('customProfilePage.addressBook.createNew')}
               </s-button>
             </s-box>

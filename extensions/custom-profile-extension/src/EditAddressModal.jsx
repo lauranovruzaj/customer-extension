@@ -26,16 +26,20 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
+    
     if (editingAddress) {
       setFormData({
         firstName: editingAddress.firstName || '',
         lastName: editingAddress.lastName || '',
+         company: editingAddress.company || '',
         address1: editingAddress.address1 || '',
         address2: editingAddress.address2 || '',
         city: editingAddress.city || '',
+        territoryCode:  editingAddress.territoryCode || '',
+        zoneCode:  editingAddress.zoneCode || '',
         zip: editingAddress.zip || '',
-        zoneCode: editingAddress.zoneCode || '',
-        territoryCode: editingAddress.territoryCode || '',
+        phoneNumber: editingAddress.phoneNumber || '',
+    
       });
       setFormError(null);
       setSaveSuccess(false);
@@ -56,12 +60,14 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
       address: {
         firstName: formData.firstName,
         lastName: formData.lastName,
+        company: formData.company,
         address1: formData.address1,
         address2: formData.address2,
         city: formData.city,
-        zip: formData.zip,
         zoneCode: formData.zoneCode || undefined,
         territoryCode: formData.territoryCode || undefined,
+        zip: formData.zip,
+        phoneNumber: formData.phoneNumber
       },
     });
     setSaving(false);
@@ -111,7 +117,15 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
             value={formData.territoryCode}
             onInput={field('territoryCode')}
             helpText="ISO country code, e.g. IT, US, GB"
+  
           />
+           <s-text-field
+              label={t('customProfilePage.addressBook.form.province')}
+              name="zoneCode"
+              value={formData.zoneCode}
+              onInput={field('zoneCode')}
+              helpText="Province/state code, e.g. NA, CA, NY"
+            />
           <s-grid gridTemplateColumns="1fr 1fr" gap="base">
             <s-text-field
               label={t('customProfilePage.addressBook.form.firstName')}
@@ -125,7 +139,14 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
               value={formData.lastName}
               onInput={field('lastName')}
             />
+             <s-text-field
+              label={t('customProfilePage.addressBook.form.company')}
+              name="company"
+              value={formData.company}
+              onInput={field('company')}
+            />
           </s-grid>
+
           <s-text-field
             label={t('customProfilePage.addressBook.form.address1')}
             name="address1"
@@ -145,19 +166,22 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
               value={formData.zip}
               onInput={field('zip')}
             />
+            
             <s-text-field
               label={t('customProfilePage.addressBook.form.city')}
               name="city"
               value={formData.city}
               onInput={field('city')}
             />
-            <s-text-field
-              label={t('customProfilePage.addressBook.form.province')}
-              name="zoneCode"
-              value={formData.zoneCode}
-              onInput={field('zoneCode')}
-              helpText="Province/state code, e.g. NA, CA, NY"
+              <s-text-field
+              label={t('customProfilePage.addressBook.form.phone')}
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onInput={field('phoneNumber')}
             />
+
+           
+            
           </s-grid>
           <s-grid gridTemplateColumns="1fr auto" gap="base">
             <s-box>

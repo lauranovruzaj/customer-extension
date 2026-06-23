@@ -32,23 +32,30 @@
     "addressBook": {
       "title": "Address Book",
       "editTitle": "Edit address",
+      "addTitle": "Add address",
       "edit": "Edit",
       "delete": "Delete",
-      "createNew": "Create New Address",
+      "createNew": "Add new address",
       "empty": "No saved addresses yet.",
       "form": {
         "country": "Country/region",
         "firstName": "First name",
         "lastName": "Last name",
+        "company": "Company",
         "address1": "Street and house number",
         "address2": "Apartment, suite, etc. (optional)",
         "zip": "Postal code",
         "city": "City",
         "province": "Province",
+        "phone" : "Phone",
         "cancel": "Cancel",
         "save": "Save",
         "close": "Close",
-        "success": "Address updated successfully."
+        "success": "Address updated successfully.",
+        "createSuccess": "Address added successfully.",
+        "setDefault": "This is my default address",
+        "countryHelp": "2-letter ISO code, e.g. IT for Italy, US for United States",
+        "provinceHelp": "Region/state code, e.g. NA for Naples, CA for California"
       }
     },
     "orders": {
