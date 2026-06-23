@@ -6,7 +6,7 @@ export default async () => {
   render(<Extension />, document.body);
 };
 
-const CUSTOMER_QUERY = `{
+const CUSTOMER_QUERY = `query {
   customer {
     firstName
     lastName
@@ -17,25 +17,29 @@ const CUSTOMER_QUERY = `{
       country
     }
     addresses(first: 9) {
-      nodes {
-        id
-        firstName
-        lastName
-        address1
-        city
-        zip
-        country
+      edges {
+        node {
+          id
+          firstName
+          lastName
+          address1
+          city
+          zip
+          country
+        }
       }
     }
     orders(first: 5) {
-      nodes {
-        id
-        name
-        processedAt
-        financialStatus
-        totalPrice {
-          amount
-          currencyCode
+      edges {
+        node {
+          id
+          name
+          processedAt
+          financialStatus
+          totalPrice {
+            amount
+            currencyCode
+          }
         }
       }
     }
@@ -65,11 +69,15 @@ function Extension() {
       body: JSON.stringify({query: CUSTOMER_QUERY}),
     })
       .then(res => res.json())
-      .then(({data}) => {
-        setCustomer(data.customer);
+      .then((json) => {
+        console.log('Customer API response:', JSON.stringify(json, null, 2));
+        setCustomer(json.data?.customer ?? null);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error('Customer API error:', err);
+        setLoading(false);
+      });
   }, []);
 
   const t = (key) => shopify.i18n.translate(key);
@@ -82,8 +90,8 @@ function Extension() {
     );
   }
 
-  const addresses = customer?.addresses?.nodes ?? [];
-  const orders = customer?.orders?.nodes ?? [];
+  const addresses = customer?.addresses?.edges?.map(e => e.node) ?? [];
+  const orders = customer?.orders?.edges?.map(e => e.node) ?? [];
 
   return (
     <s-page heading={t('customProfilePage.title')}>
