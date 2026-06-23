@@ -152,13 +152,7 @@ function Extension() {
               </s-stack>
             </s-clickable>
             <s-divider />
-            <s-clickable padding="base">
-              <s-stack direction="inline" gap="base" alignItems="center">
-                <s-icon type="lock" size="base" />
-                <s-text>{t('customProfilePage.nav.changePassword')}</s-text>
-              </s-stack>
-            </s-clickable>
-            <s-divider />
+           
             <s-clickable href="shopify:customer-account/logout" padding="base">
               <s-stack direction="inline" gap="base" alignItems="center">
                 <s-icon type="exit" size="base" tone="critical" />
