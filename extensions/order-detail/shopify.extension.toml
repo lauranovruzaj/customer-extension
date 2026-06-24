@@ -1,0 +1,14 @@
+api_version = "2026-04"
+
+[[extensions]]
+name = "order-detail"
+handle = "order-detail"
+type = "ui_extension"
+uid = "d4e5f6a7-b8c9-0123-def0-234567890123"
+
+[[extensions.targeting]]
+module = "./src/OrderDetail.jsx"
+target = "customer-account.order.page.render"
+
+[extensions.capabilities]
+api_access = true

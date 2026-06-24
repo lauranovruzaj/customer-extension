@@ -1,0 +1,92 @@
+{
+  "profileMessage": "Manage your account details and preferences.",
+  "profileLoyaltyButton": "View Loyalty Dashboard",
+  "profileCustomPageButton": "View My Account",
+  "profileAnnouncement": {
+    "message": "Your loyalty status has been upgraded to Platinum!",
+    "link": "View your profile"
+  },
+  "customProfilePage": {
+    "title": "My Account",
+    "loading": "Loading your account...",
+    "viewAll": "View All",
+    "nav": {
+      "overview": "Account Overview",
+      "loyalty": "Loyalty Program",
+      "personalInfo": "Personal Information",
+      "orders": "My Orders",
+  
+      "logout": "Logout"
+    },
+    "personalInfo": {
+      "title": "Personal Information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "country": "Country",
+      "email": "Email"
+    },
+    "loyalty": {
+      "title": "Loyalty Program",
+      "viewDashboard": "View Loyalty Dashboard"
+    },
+    "addressBook": {
+      "title": "Address Book",
+      "editTitle": "Edit address",
+      "addTitle": "Add address",
+      "edit": "Edit",
+      "default": "Default Address",
+      "delete": "Delete",
+      "createNew": "Add new address",
+      "empty": "No saved addresses yet.",
+      "form": {
+        "country": "Country/region",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "company": "Company",
+        "address1": "Street and house number",
+        "address2": "Apartment, suite, etc. (optional)",
+        "zip": "Postal code",
+        "city": "City",
+        "province": "Province",
+        "phone" : "Phone",
+        "cancel": "Cancel",
+        "save": "Save",
+        "close": "Close",
+        "success": "Address updated successfully.",
+        "createSuccess": "Address added successfully.",
+        "setDefault": "This is my default address",
+        "countryHelp": "2-letter ISO code, e.g. IT for Italy, US for United States",
+        "provinceHelp": "Region/state code, e.g. NA for Naples, CA for California"
+      }
+    },
+    "editProfile": {
+      "title": "Edit profile",
+      "title_field": "Title",
+      "dateOfBirth": "Date of birth",
+      "phoneNumber": "Phone number",
+      "preferredCommunicationChannel": "Preferred communication channel",
+      "countryOfOrigin": "Country / region of origin",
+      "success": "Profile updated successfully.",
+      "emailHelp": "This email is used for sign-in and order updates."
+    },
+    "orders": {
+      "title": "Order History",
+      "number": "Order Number",
+      "date": "Order Date",
+      "status": "Status",
+      "total": "Total",
+      "empty": "No orders yet.",
+      "history": "Order History",
+      "product": "Product",
+      "quantity": "Quantity",
+      "price": "Price",
+      "orderDate": "Order date",
+      "products": "Products",
+      "shipping": "Shipping",
+      "customerInfo": "Customer Information",
+      "shippingInfo": "Shipping Information",
+      "billingInfo": "Billing Information",
+      "payment": "Payment"
+    }
+  }
+}

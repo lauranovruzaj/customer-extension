@@ -149,7 +149,7 @@ function Extension() {
               </s-stack>
             </s-clickable>
             <s-divider />
-            <s-clickable href="shopify:customer-account/orders" padding="base">
+            <s-clickable href="extension:order-history/orders" padding="base">
               <s-stack direction="inline" gap="base" alignItems="center">
                 <s-icon type="orders" size="base" />
                 <s-text>{t('customProfilePage.nav.orders')}</s-text>
