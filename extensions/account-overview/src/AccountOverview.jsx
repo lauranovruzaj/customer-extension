@@ -128,14 +128,14 @@ function Extension() {
         {/* Sidebar */}
         <s-box border="base" borderRadius="base">
           <s-stack direction="block" gap="none">
-            <s-clickable href="extension:custom-profile-extension" padding="base" background="subdued">
+            <s-clickable href="extension:account-overview" padding="base" background="subdued">
               <s-stack direction="inline" gap="base" alignItems="center">
                 <s-icon type="profile" size="base" />
                 <s-text type="strong">{t('customProfilePage.nav.overview')}</s-text>
               </s-stack>
             </s-clickable>
             <s-divider />
-            <s-clickable href="extension:loyalty-extension" padding="base">
+            <s-clickable href="extension:loyalty" padding="base">
               <s-stack direction="inline" gap="base" alignItems="center">
                 <s-icon type="gift" size="base" />
                 <s-text>{t('customProfilePage.nav.loyalty')}</s-text>
@@ -198,7 +198,7 @@ function Extension() {
 
           {/* Loyalty Program */}
           <s-section heading={t('customProfilePage.loyalty.title')}>
-            <s-link href="extension:loyalty-extension">
+            <s-link href="extension:loyalty">
               {t('customProfilePage.loyalty.viewDashboard')}
             </s-link>
           </s-section>

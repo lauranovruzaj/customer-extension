@@ -1,13 +1,13 @@
 api_version = "2026-04"
 
 [[extensions]]
-name = "custom-profile-extension"
-handle = "custom-profile-extension"
+name = "account-overview"
+handle = "account-overview"
 type = "ui_extension"
 uid = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
 
 [[extensions.targeting]]
-module = "./src/CustomProfilePage.jsx"
+module = "./src/AccountOverview.jsx"
 target = "customer-account.page.render"
 url_handle = "custom-profile"
 

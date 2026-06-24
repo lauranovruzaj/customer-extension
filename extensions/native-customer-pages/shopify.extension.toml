@@ -1,8 +1,8 @@
 api_version = "2026-04"
 
 [[extensions]]
-name = "customer-extension"
-handle = "customer-extension"
+name = "native-customer-pages"
+handle = "native-customer-pages"
 type = "ui_extension"
 uid = "3392f465-f282-2a5a-b60e-29c1ee30432aae903e16"
 
