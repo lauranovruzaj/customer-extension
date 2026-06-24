@@ -20,7 +20,7 @@ const DELETE_MUTATION = `
   }
 `;
 
-export function EditAddressModal({ editingAddress, onSuccess }) {
+export function EditAddressModal({ editingAddress, isDefault, onSuccess }) {
   const [formData, setFormData] = useState({});
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState(null);
@@ -40,7 +40,7 @@ export function EditAddressModal({ editingAddress, onSuccess }) {
         zoneCode:  editingAddress.zoneCode || '',
         zip: editingAddress.zip || '',
         phoneNumber: editingAddress.phoneNumber || '',
-        defaultAddress: false,
+        defaultAddress: isDefault ?? false,
       });
       setFormError(null);
       setSaveSuccess(false);

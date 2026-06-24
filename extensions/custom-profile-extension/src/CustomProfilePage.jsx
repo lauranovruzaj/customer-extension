@@ -115,7 +115,11 @@ function Extension() {
   return (
     <s-page heading={t('customProfilePage.title')}>
 
-      <EditAddressModal editingAddress={editingAddress} onSuccess={fetchCustomer} />
+      <EditAddressModal
+        editingAddress={editingAddress}
+        isDefault={editingAddress?.id === customer?.defaultAddress?.id}
+        onSuccess={fetchCustomer}
+      />
       <CreateAddressModal onSuccess={fetchCustomer} />
       <EditProfileModal customer={customer} onSuccess={fetchCustomer} />
 
@@ -169,19 +173,19 @@ function Extension() {
           <s-section heading={t('customProfilePage.personalInfo.title')}>
             <s-grid gridTemplateColumns="1fr 1fr" gap="base">
               <s-box>
-                <s-text color="subdued">{t('customProfilePage.personalInfo.firstName')}</s-text>
+                <s-text color="subdued">{t('customProfilePage.personalInfo.firstName')}: </s-text>
                 <s-text>{customer?.firstName ?? '—'}</s-text>
               </s-box>
               <s-box>
-                <s-text color="subdued">{t('customProfilePage.personalInfo.lastName')}</s-text>
+                <s-text color="subdued">{t('customProfilePage.personalInfo.lastName')}: </s-text>
                 <s-text>{customer?.lastName ?? '—'}</s-text>
               </s-box>
               <s-box>
-                <s-text color="subdued">{t('customProfilePage.personalInfo.country')}</s-text>
+                <s-text color="subdued">{t('customProfilePage.personalInfo.country')}: </s-text>
                 <s-text>{customer?.defaultAddress?.country ?? '—'}</s-text>
               </s-box>
               <s-box>
-                <s-text color="subdued">{t('customProfilePage.personalInfo.email')}</s-text>
+                <s-text color="subdued">{t('customProfilePage.personalInfo.email')}: </s-text>
                 <s-text>{customer?.emailAddress?.emailAddress ?? '—'}</s-text>
               </s-box>
             </s-grid>
