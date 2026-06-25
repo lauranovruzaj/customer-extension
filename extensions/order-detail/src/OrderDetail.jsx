@@ -15,8 +15,8 @@ const ORDER_QUERY = `
       processedAt
       financialStatus
       fulfillmentStatus
-      subtotalPrice { amount currencyCode }
-      totalShippingPrice { amount currencyCode }
+      subtotal { amount currencyCode }
+      totalShipping { amount currencyCode }
       totalPrice { amount currencyCode }
       lineItems(first: 50) {
         edges {
@@ -48,15 +48,8 @@ const ORDER_QUERY = `
         country
       }
       paymentInformation {
-        paymentMethods {
-          paymentDetails {
-            __typename
-            ... on CardPaymentDetails {
-              cardBrand
-              lastFourDigits
-            }
-          }
-        }
+        paymentStatus
+        paymentTerms { paymentTermsName }
       }
     }
   }
@@ -138,7 +131,8 @@ function Extension() {
   }
 
   const lineItems = order.lineItems?.edges?.map(e => e.node) ?? [];
-  const payments = order.paymentInformation?.paymentMethods ?? [];
+  const paymentStatus = order.paymentInformation?.paymentStatus;
+  const paymentTermsName = order.paymentInformation?.paymentTerms?.paymentTermsName;
 
   return (
     <s-page heading={order.name}>
@@ -199,14 +193,14 @@ function Extension() {
               <s-box paddingBlock="base">
                 <s-grid gridTemplateColumns="1fr auto">
                   <s-text color="subdued">{t('customProfilePage.orders.products')}</s-text>
-                  <s-text>{formatMoney(order.subtotalPrice.amount, order.subtotalPrice.currencyCode)}</s-text>
+                  <s-text>{order.subtotal ? formatMoney(order.subtotal.amount, order.subtotal.currencyCode) : '—'}</s-text>
                 </s-grid>
               </s-box>
               <s-divider />
               <s-box paddingBlock="base">
                 <s-grid gridTemplateColumns="1fr auto">
                   <s-text color="subdued">{t('customProfilePage.orders.shipping')}</s-text>
-                  <s-text>{formatMoney(order.totalShippingPrice.amount, order.totalShippingPrice.currencyCode)}</s-text>
+                  <s-text>{order.totalShipping ? formatMoney(order.totalShipping.amount, order.totalShipping.currencyCode) : '—'}</s-text>
                 </s-grid>
               </s-box>
               <s-divider />
@@ -235,19 +229,12 @@ function Extension() {
             />
           </s-grid>
 
-          {payments.length > 0 && (
+          {(paymentStatus || paymentTermsName) && (
             <s-box border="base" borderRadius="base" padding="base">
-              <s-stack direction="block" gap="small" alignItems="center">
+              <s-stack direction="block" gap="small">
                 <s-text type="strong">{t('customProfilePage.orders.payment')}</s-text>
-                {payments.map((pm, i) => {
-                  const details = pm.paymentDetails;
-                  if (details?.__typename === 'CardPaymentDetails') {
-                    return (
-                      <s-text key={i}>{details.cardBrand} •••• {details.lastFourDigits}</s-text>
-                    );
-                  }
-                  return null;
-                })}
+                {paymentStatus && <s-text>{paymentStatus}</s-text>}
+                {paymentTermsName && <s-text>{paymentTermsName}</s-text>}
               </s-stack>
             </s-box>
           )}
